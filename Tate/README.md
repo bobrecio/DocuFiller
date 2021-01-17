@@ -1,1 +1,1 @@
-This Folder contains Tate's work, primarily the static website for the s3 bucket
+This Folder contains Tate's work, primarily the web app hosted on AWS Fargate
