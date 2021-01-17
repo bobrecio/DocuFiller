@@ -1,4 +1,6 @@
 from flask import Flask, render_template, request
+import requests
+import json
 
 app = Flask(__name__)
 
@@ -12,10 +14,22 @@ def submit():
     firstname = request.form.get("firstname", "")
     lastname = request.form.get("lastname", "")
     address = request.form.get("address", "")
+    email = request.form.get("email", "")
+    phone = request.form.get("phone", "")
+    data = {
+        'firstname': firstname,
+        'lastname': lastname,
+        'address': address,
+        'email': email,
+        'phone': phone
+    }
+    jsonPayload = json.dumps(data)
+    url = 'https://vjccd4gsqc.execute-api.us-east-1.amazonaws.com/beta'
+    response = requests.post(url, data=jsonPayload)
+
     return render_template('success.html')
-<<<<<<< HEAD:Tate/Fargate-Flask/app.py
+
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
-=======
->>>>>>> fd03b5e84bdc8d43ccb9b90b419548e52f6a8832:Tate/DocuFillerPython/app.py
