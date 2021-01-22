@@ -20,3 +20,7 @@ def lambda_handler(event, context):
     s3.put_object(Bucket=bucket, Key=filename, Body=payload)
 
     print('Put Complete')
+    
+    return {
+        "statusCode": 200
+    }
