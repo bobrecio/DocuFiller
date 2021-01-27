@@ -4,9 +4,27 @@ const s3bucket = 'team3-docufiller';
 
 exports.handler = async function(event, context) {
 
-  const jsonStr = JSON.stringify(event);
-  const data = JSON.parse(jsonStr);
-
+  //const jsonStr = JSON.stringify(event.body);
+  //const data = JSON.parse(jsonStr);
+  const data = JSON.parse(event.body);
+  
+  /*
+  try {
+      const params0 = {
+        Bucket: s3bucket,
+        Key: 'test_form.htm',
+        Body: JSON.stringify(data),
+        ContentType: 'text/html'
+      };
+      const putresult0 = await s3.putObject(params0).promise();
+      console.log("Successfully put");
+    }
+    catch (error) {
+      console.log("ERR==>" + error);
+      return;
+    };
+  */
+    
   //console.log(data);
 
   const createVueObject = (emps) => `
@@ -40,6 +58,12 @@ exports.handler = async function(event, context) {
     const printTime = new Date();
     const vueData = data.map(createVueObject).join('');
     let thisForm = "";
+    htmlForm.forEach((value, index) => {
+      filledForm[index] = htmlForm[index](vueData, printTime);
+      thisForm = "Form0" + index;
+
+    });
+
     // -----form00-----
     filledForm[0] = htmlForm[0](vueData, printTime);
     thisForm = "Form00.html";
@@ -49,15 +73,17 @@ exports.handler = async function(event, context) {
         Bucket: s3bucket,
         Key: thisForm,
         Body: filledForm[0],
+        ContentLength: filledForm[0].length,
         ContentType: 'text/html'
       };
       const putresult0 = await s3.putObject(params0).promise();
-      console.log("Successfully put " + thisForm);
+      console.log("Successfully put " + thisForm + " (Length: " + filledForm[0].length + ")");
     }
     catch (error) {
       console.log("ERR==>" + error);
       return;
     }
+
     // -----form01-----
     filledForm[1] = htmlForm[1](vueData, printTime);
     thisForm = "Form01.html";
@@ -76,6 +102,7 @@ exports.handler = async function(event, context) {
       console.log("ERR==>" + error);
       return;
     }
+
     // -----form02-----
     filledForm[2] = htmlForm[2](vueData, printTime);
     thisForm = "Form02.html";
@@ -112,10 +139,11 @@ exports.handler = async function(event, context) {
       console.log("ERR==>" + error);
       return;
     }
-
+    
   }
   catch (error) {
     console.log('Error generating form -> ', error);
   }
-  return "code: 200";
+  
+  return {"statusCode":200};
 };
