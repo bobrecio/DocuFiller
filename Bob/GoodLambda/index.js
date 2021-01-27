@@ -4,28 +4,8 @@ const s3bucket = 'team3-docufiller';
 
 exports.handler = async function(event, context) {
 
-  //const jsonStr = JSON.stringify(event.body);
-  //const data = JSON.parse(jsonStr);
   const data = JSON.parse(event.body);
-  
-  /*
-  try {
-      const params0 = {
-        Bucket: s3bucket,
-        Key: 'test_form.htm',
-        Body: JSON.stringify(data),
-        ContentType: 'text/html'
-      };
-      const putresult0 = await s3.putObject(params0).promise();
-      console.log("Successfully put");
-    }
-    catch (error) {
-      console.log("ERR==>" + error);
-      return;
-    };
-  */
-    
-  //console.log(data);
+
 
   const createVueObject = (emps) => `
       const formData = new Vue({
