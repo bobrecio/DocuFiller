@@ -4,20 +4,85 @@
         <title>DocuFiller!</title>
     </head>
     <body style="background-color: lightgrey;">
-        <h1 id="title" style="text-align: center;">DocuFiller</h1>
+        <h1 id="title" style="text-align: center; text-decoration: underline;">DocuFiller</h1>
         <div width="200px" style="text-align: center;">
             <form action="/submit" method="POST">
+                <br>
+                <br>
                 <p>First Name</p>
                 <input type="text" name="firstname" size="25">
                 <p>Last Name</p>
                 <input type="text" name="lastname" size="25">
-		        <p>Address</p>
-                <input type="text" name="address" size="25">
+                <br><br><br><br>
+
+                <div style="text-align: center;">
+		        <label>Street</label>
+                <input style="margin-right: 10px;" type="text" name="street" size="25">
+                <label>City</label>
+                <input style="margin-right: 10px;" type="text" name="city" size="15">
+                <label>State</label>
+                <select style="margin-right: 10px;" name="state">
+                    <option value="AL">AL</option>
+                    <option value="AK">AK</option>
+                    <option value="AR">AR</option>	
+                    <option value="AZ">AZ</option>
+                    <option value="CA">CA</option>
+                    <option value="CO">CO</option>
+                    <option value="CT">CT</option>
+                    <option value="DC">DC</option>
+                    <option value="DE">DE</option>
+                    <option value="FL">FL</option>
+                    <option value="GA">GA</option>
+                    <option value="HI">HI</option>
+                    <option value="IA">IA</option>	
+                    <option value="ID">ID</option>
+                    <option value="IL">IL</option>
+                    <option value="IN">IN</option>
+                    <option value="KS">KS</option>
+                    <option value="KY">KY</option>
+                    <option value="LA">LA</option>
+                    <option value="MA">MA</option>
+                    <option value="MD">MD</option>
+                    <option value="ME">ME</option>
+                    <option value="MI">MI</option>
+                    <option value="MN">MN</option>
+                    <option value="MO">MO</option>	
+                    <option value="MS">MS</option>
+                    <option value="MT">MT</option>
+                    <option value="NC">NC</option>	
+                    <option value="NE">NE</option>
+                    <option value="NH">NH</option>
+                    <option value="NJ">NJ</option>
+                    <option value="NM">NM</option>			
+                    <option value="NV">NV</option>
+                    <option value="NY">NY</option>
+                    <option value="ND">ND</option>
+                    <option value="OH">OH</option>
+                    <option value="OK">OK</option>
+                    <option value="OR">OR</option>
+                    <option value="PA">PA</option>
+                    <option value="RI">RI</option>
+                    <option value="SC">SC</option>
+                    <option value="SD">SD</option>
+                    <option value="TN">TN</option>
+                    <option value="TX">TX</option>
+                    <option value="UT">UT</option>
+                    <option value="VT">VT</option>
+                    <option value="VA">VA</option>
+                    <option value="WA">WA</option>
+                    <option value="WI">WI</option>	
+                    <option value="WV">WV</option>
+                    <option value="WY">WY</option>
+                </select>
+                <label>Zip</label>
+                <input type="text" name="zip" size="10">
+                </div>
+                <br>
                 <p>Email</p>
                 <input type="text" name="email" size="25">
                 <p>Phone Number</p>
                 <input type="text" name="phone" size="25">
-                <br><br><br>
+                <br><br><br><br><br>
                 <input type="submit" value="Submit">
             </form>
         </div>
