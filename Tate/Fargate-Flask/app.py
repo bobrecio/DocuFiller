@@ -11,24 +11,35 @@ def index():
 
 @app.route('/submit', methods=['POST'])
 def submit():
-    firstname = request.form.get("firstname", "")
-    lastname = request.form.get("lastname", "")
-    address = request.form.get("address", "")
+    first = request.form.get("firstname", "")
+    last = request.form.get("lastname", "")
+    street = request.form.get("street", "")
+    city = request.form.get("city", "")
+    state = request.form.get("state", "")
+    zipcode = request.form.get("zip", "")
     email = request.form.get("email", "")
     phone = request.form.get("phone", "")
-    data = {
-        'firstname': firstname,
-        'lastname': lastname,
-        'address': address,
+    data = [
+        {
+        'name': {
+            'first': first,
+            'last': last,
+        },
+        'address': {
+            'street': street,
+            'city': city,
+            'state': state,
+            'zipcode': zipcode
+        },
         'email': email,
         'phone': phone
-    }
+        }
+    ]
     jsonPayload = json.dumps(data)
-    url = 'https://vjccd4gsqc.execute-api.us-east-1.amazonaws.com/beta'
+    url = 'https://6p1v3f2z2j.execute-api.us-east-1.amazonaws.com/work'
     response = requests.post(url, data=jsonPayload)
 
     return render_template('success.html')
-
 
 
 if __name__ == '__main__':
