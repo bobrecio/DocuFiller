@@ -1,0 +1,196 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Lab template
+Parameters:
+  EnvName:
+    Type: String
+    Description: 'Name of an environment. ''dev'', ''staging'', ''prod'' and any name.'
+    AllowedPattern: '^.*[^0-9]$'
+    ConstraintDescription: Must end with non-numeric character.
+  LabVpcCidr:
+    Type: String
+    AllowedPattern: >-
+      ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$
+    Default: 10.0.0.0/20
+  PublicSubnetCidr:
+    Type: String
+    AllowedPattern: >-
+      ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$
+    Default: 10.0.0.0/24
+Resources:
+  Flask:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      Timeout: 10
+      Handler: myapp/index.lambda_handler
+      Runtime: python3.6
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 9ce92115-c75c-4f33-b1ee-24cc11da9275
+    DependsOn:
+      - APIGateway
+  LabVPC:
+    Type: 'AWS::EC2::VPC'
+    Properties:
+      CidrBlock: !Ref LabVpcCidr
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: Lab VPC
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 1d965cdb-e26c-4d37-8c4f-fe5caf6b7ac5
+  IGW:
+    Type: 'AWS::EC2::InternetGateway'
+    Properties:
+      Tags:
+        - Key: Name
+          Value: Lab IGW
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: e90eac3a-7a31-4c8f-a882-6c793e5d5953
+  VPCtoIGWConnection:
+    Type: 'AWS::EC2::VPCGatewayAttachment'
+    Properties:
+      InternetGatewayId: !Ref IGW
+      VpcId: !Ref LabVPC
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 249b757f-5e62-468f-b7a5-787d0547e2a0
+  APIGateway:
+    Type: 'AWS::ApiGatewayV2::Api'
+    Properties: {}
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 06d4ef5a-b4dc-4158-a744-b84e24be4849
+    DependsOn:
+      - Lambda
+  Lambda:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      Role: 'arn:aws:iam::792009768331:role/Lambda_FullAccess'
+      FunctionName: !Sub 'lambda-function-${EnvName}'
+      Description: LambdaFunctioni of nodejs10.x.
+      Runtime: nodejs10.x
+      Code:
+        ZipFile: |-
+          exports.handler = function(event, context){
+           var sample = sample;
+      Handler: '${LambdaHandlerPath}'
+      MemorySize: 128
+      Timeout: 10
+      Environment:
+        Variables:
+          ENV: !Sub '${EnvName}-Test'
+          TZ: UTC
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: f2bdb6d5-02cd-454b-8e55-a96c33de6bed
+    DependsOn:
+      - S3Bucket2
+  S3Bucket2:
+    Type: 'AWS::S3::Bucket'
+    Properties: {}
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: c6b753a9-6f2c-4289-b8f2-c84b6263118f
+  AWSFargate:
+    Type: 'AWS::EKS::FargateProfile'
+    Properties: {}
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 075382a4-01f0-4623-a174-9ed329f9e563
+    DependsOn:
+      - Flask
+Outputs:
+  LabVPCDefaultSecurityGroup:
+    Value: !Sub '${LabVPC.DefaultSecurityGroup}'
+Metadata:
+  'AWS::CloudFormation::Designer':
+    e90eac3a-7a31-4c8f-a882-6c793e5d5953:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: -1120
+        'y': -1520
+      z: 1
+      embeds: []
+    1d965cdb-e26c-4d37-8c4f-fe5caf6b7ac5:
+      size:
+        width: 1100
+        height: 210
+      position:
+        x: -1640
+        'y': -1290
+      z: 1
+      embeds:
+        - c6b753a9-6f2c-4289-b8f2-c84b6263118f
+        - f2bdb6d5-02cd-454b-8e55-a96c33de6bed
+        - 06d4ef5a-b4dc-4158-a744-b84e24be4849
+        - 9ce92115-c75c-4f33-b1ee-24cc11da9275
+        - 075382a4-01f0-4623-a174-9ed329f9e563
+    249b757f-5e62-468f-b7a5-787d0547e2a0:
+      source:
+        id: 1d965cdb-e26c-4d37-8c4f-fe5caf6b7ac5
+      target:
+        id: e90eac3a-7a31-4c8f-a882-6c793e5d5953
+      z: 1
+    9ce92115-c75c-4f33-b1ee-24cc11da9275:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: -1310
+        'y': -1230
+      z: 2
+      parent: 1d965cdb-e26c-4d37-8c4f-fe5caf6b7ac5
+      embeds: []
+      dependson:
+        - 06d4ef5a-b4dc-4158-a744-b84e24be4849
+    06d4ef5a-b4dc-4158-a744-b84e24be4849:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: -1090
+        'y': -1230
+      z: 2
+      parent: 1d965cdb-e26c-4d37-8c4f-fe5caf6b7ac5
+      embeds: []
+      dependson:
+        - f2bdb6d5-02cd-454b-8e55-a96c33de6bed
+    f2bdb6d5-02cd-454b-8e55-a96c33de6bed:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: -880
+        'y': -1230
+      z: 2
+      parent: 1d965cdb-e26c-4d37-8c4f-fe5caf6b7ac5
+      embeds: []
+      dependson:
+        - c6b753a9-6f2c-4289-b8f2-c84b6263118f
+    c6b753a9-6f2c-4289-b8f2-c84b6263118f:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: -660
+        'y': -1230
+      z: 2
+      parent: 1d965cdb-e26c-4d37-8c4f-fe5caf6b7ac5
+      embeds: []
+    075382a4-01f0-4623-a174-9ed329f9e563:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: -1510
+        'y': -1230
+      z: 2
+      parent: 1d965cdb-e26c-4d37-8c4f-fe5caf6b7ac5
+      embeds: []
+      dependson:
+        - 9ce92115-c75c-4f33-b1ee-24cc11da9275
